@@ -16,7 +16,7 @@
 track tools, materials, and job assignments in real time – even in remote, frigid  
 conditions.
 
-> Built for *ICE Mitigation Services* with future expansion to **JT Walsh Contracting**.
+> Built for *ICE Mitigation Services* with future expansion to **JT W Contracting**.
 
 ---
 
