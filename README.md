@@ -85,3 +85,73 @@ Edit
 cd frontend
 npm ci
 npm run dev
+
+🔐 Environment Variables
+Key	Purpose	Default
+SECRET_KEY	Flask session secret	dev‑secret
+JWT_SECRET_KEY	JWT signing key	jwt‑secret
+JWT_ACCESS_TOKEN_EXPIRES	Minutes / hours	3600 (1 hr)
+JWT_REFRESH_TOKEN_EXPIRES	Days	30
+SQLALCHEMY_DATABASE_URI	DB connection string	sqlite:///…
+
+In Docker, override via docker-compose.override.yml or .env.
+
+🧪 Tests
+bash
+Copy
+Edit
+pytest -v
+Outputs coverage & green/red indicator.
+CI can be wired by dropping the following in .github/workflows/ci.yml.
+
+yaml
+Copy
+Edit
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+📈 Roadmap
+Rate limiting for auth routes (flask-limiter)
+
+Postgres and automatic migrations (Alembic)
+
+QR/Barcode scanner in Field UI (react‑qr‑scanner)
+
+Docusketch / Hover integrations (future)
+
+GitHub Actions → Fly.io/AWS deploy pipeline
+
+🤝 Contributing
+Pull Requests are welcome!
+Please open an issue first for major changes or feature proposals.
+
+Fork → Branch (feat/xyz)
+
+Commit with conventional messages
+
+pytest must pass
+
+Create PR, fill template, request review
+
+© License
+MIT – see LICENSE for details.
+© 2025 ICE Mitigation Services & Mr. Dear.
+
+pgsql
+Copy
+Edit
+
+### How to use
+
+1. In your GitHub repo UI, click **Add file → Create new file → name it `README.md`**  
+2. Paste everything inside the code‑block (omit the triple‑backticks).  
+3. Commit directly to `main` **or** open a PR if you follow branch flow.  
+4. Refresh repo – new README with badges & tables is live.
