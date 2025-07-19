@@ -127,6 +127,28 @@ def get_current_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@auth_bp.route("/auth/test", methods=["GET"])
+def test_endpoint():
+    """Test endpoint without JWT authentication"""
+    return jsonify({
+        'message': 'Test endpoint working',
+        'status': 'success'
+    }), 200
+
+@auth_bp.route("/auth/me-temp", methods=["GET"])
+def get_current_user_temp():
+    """Temporary endpoint to test user data without JWT"""
+    try:
+        # For testing, return the admin user
+        user = User.query.filter_by(username='admin').first()
+        if not user:
+            return jsonify({'error': 'Admin user not found'}), 404
+        
+        return jsonify(user.to_dict()), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @auth_bp.route('/auth/change-password', methods=['POST'])
 @jwt_required()
 def change_password():

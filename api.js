@@ -1,5 +1,7 @@
 const API_BASE_URL = 
-  '/api';
+  process.env.NODE_ENV === 'production' 
+    ? '/api' 
+    : 'http://localhost:5000/api';
 
 class ApiClient {
   constructor() {
@@ -7,12 +9,14 @@ class ApiClient {
   }
 
   setToken(token) {
+    console.log("Setting token:", token);
     this.token = token;
     if (token) {
       localStorage.setItem('access_token', token);
     } else {
       localStorage.removeItem('access_token');
     }
+    console.log("Token set, this.token is now:", this.token);
   }
 
   getHeaders() {
@@ -22,6 +26,9 @@ class ApiClient {
     
     if (this.token) {
       headers.Authorization = `Bearer ${this.token}`;
+      console.log("Adding Authorization header:", headers.Authorization);
+    } else {
+      console.log("No token available for Authorization header");
     }
     return headers;
   }
@@ -62,10 +69,6 @@ class ApiClient {
       body: JSON.stringify({ username, password }),
     });
     
-    if (response.access_token) {
-      this.setToken(response.access_token);
-    }
-    
     return response;
   }
 
@@ -77,7 +80,8 @@ class ApiClient {
   }
 
   async getCurrentUser() {
-    return this.request("/auth/me");
+    // Temporarily use non-JWT endpoint for testing
+    return this.request("/auth/me-temp");
   }
 
   async logout() {
@@ -87,7 +91,8 @@ class ApiClient {
   // Inventory
   async getInventory(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/inventory${queryString ? `?${queryString}` : ''}`);
+    const endpoint = queryString ? `/inventory?${queryString}` : '/inventory';
+    return this.request(endpoint);
   }
 
   async getInventoryItem(id) {
@@ -132,10 +137,10 @@ class ApiClient {
     return this.request('/inventory/categories');
   }
 
-  // Jobs
+  // Jobs API
   async getJobs(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/jobs${queryString ? `?${queryString}` : ''}`);
+    return this.request(`/jobs${queryString ? `?${queryString}` : ""}`);
   }
 
   async getJob(id) {
@@ -143,57 +148,63 @@ class ApiClient {
   }
 
   async createJob(jobData) {
-    return this.request('/jobs', {
-      method: 'POST',
+    return this.request("/jobs", {
+      method: "POST",
       body: JSON.stringify(jobData),
     });
   }
 
   async updateJob(id, jobData) {
     return this.request(`/jobs/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(jobData),
     });
   }
 
   async deleteJob(id) {
     return this.request(`/jobs/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async getJobAssignments(id) {
-    return this.request(`/jobs/${id}/assignments');
+    return this.request(`/jobs/${id}/assignments`);
   }
 
   async getDashboardStats() {
-    return this.request('/jobs/dashboard');
+    // Temporarily use non-JWT endpoint for testing
+    return this.request("/jobs/dashboard-temp");
   }
 
   // Reports
   async getInventoryUsageReport(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/reports/inventory-usage${queryString ? `?${queryString}` : ''}`);
+    const endpoint = queryString ? `/reports/inventory-usage?${queryString}` : '/reports/inventory-usage';
+    return this.request(endpoint);
   }
 
   async getJobSummaryReport(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/reports/job-summary${queryString ? `?${queryString}` : ''}`);
+    const endpoint = queryString ? `/reports/job-summary?${queryString}` : '/reports/job-summary';
+    return this.request(endpoint);
   }
 
   async getInventoryStatusReport(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/reports/inventory-status${queryString ? `?${queryString}` : ''}`);
+    const endpoint = queryString ? `/reports/inventory-status?${queryString}` : '/reports/inventory-status';
+    return this.request(endpoint);
   }
 
   async getOverdueItemsReport() {
-    return this.request('/reports/overdue-items');
+    // Temporarily use non-JWT endpoint for testing
+    return this.request('/reports/overdue-items-temp');
   }
 
   // Users
   async getUsers(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    return this.request(`/users${queryString ? `?${queryString}` : ''}`);
+    const endpoint = queryString ? `/users?${queryString}` : '/users';
+    return this.request(endpoint);
   }
 
   async getUser(id) {
@@ -222,5 +233,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-
 

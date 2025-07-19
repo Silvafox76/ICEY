@@ -30,6 +30,9 @@ app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 app.config['JWT_SECRET_KEY'] = 'jwt-secret-string-change-in-production'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=30)
+app.config['JWT_CSRF_CHECK_FORM'] = False
+app.config['JWT_CSRF_IN_COOKIES'] = False
+app.config['JWT_ALGORITHM'] = 'HS256'
 
 # Enable CORS for all routes
 CORS(app, origins="*")
@@ -104,6 +107,19 @@ def invalid_token_callback(error):
 @jwt.unauthorized_loader
 def missing_token_callback(error):
     return {'error': 'Authorization token is required'}, 401
+
+# Routes to serve React frontend
+@app.route('/')
+def serve_frontend():
+    return app.send_static_file('index.html')
+
+@app.route('/<path:path>')
+def serve_frontend_routes(path):
+    # Serve static files if they exist
+    if path.startswith('assets/'):
+        return app.send_static_file(path)
+    # Otherwise serve the React app for client-side routing
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
